@@ -3,7 +3,7 @@ layout: default
 title: My Project Blog
 ---
 
-# Welcome to [Project Name]
+# Welcome to Hydra Effect in Refusal
 
 This is the documentation and development blog for my project. 
 
