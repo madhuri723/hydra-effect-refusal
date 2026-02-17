@@ -13,3 +13,5 @@ This is the documentation and development blog for my project.
 ### Links
 - [View the Code](https://github.com)
 - [Project Roadmap](./roadmap.md)
+- [Read the detailed launch post here](./2026/02/17/launch.html)
+
