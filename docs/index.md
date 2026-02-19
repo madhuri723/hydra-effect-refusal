@@ -8,10 +8,9 @@ title: My Project Blog
 This is the documentation and development blog for my project. 
 
 ### Recent Updates
-- [Project Launch - Feb 17, 2026](./2026-02-17-launch.md) 
+- [Project Launch - Feb 17, 2026]({{ site.baseurl }}{% post_url 2026-02-17-v1-release %}) 
 
 ### Links
 - [View the Code](https://github.com)
-- [Project Roadmap](./roadmap.md)
-- [Read the detailed launch post here](./2026/02/17/v1-release/launch.html)
-
+- [Project Roadmap]({{ site.baseurl }}/roadmap.md)
+- [Read the detailed launch post here]({{ site.baseurl }}/2026/02/17/v1-release.html)
