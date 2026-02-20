@@ -2,6 +2,8 @@
 layout: post
 title: "Decapitating the Hydra: How Upstream Sensors Control Refusal"
 date: 2026-02-19
+author: "Madhuri Agarwal"
+tags: [mechanistic-interpretability, ai-safety, hydra-effect]
 ---
 
 # The Unkillable Refusal
