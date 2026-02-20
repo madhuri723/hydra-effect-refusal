@@ -1,3 +1,4 @@
 theme: jekyll-theme-minimal
 title: "Hydra effect in Refusal Blog"
+baseurl: "/hydra-effect-refusal"
 description: "Documenting my journey understanding Hydra effect in Refusal Blog"
