@@ -4,7 +4,7 @@ This repository explores the **Hydra Effect** in Gemma-2-2b, a phenomenon where 
 
 ## 🚀 The Discovery
 While downstream layers (14–16) host the refusal "heads," my research proves that refusal is actually governed by **upstream harm sensors** (Layers 9–13). By muting just **40 upstream features**, the "Hydra" is starved, and the model's defense collapses without ever touching the refusal circuitry.
-
+![Jailbreak](docs/assets/images/image2.png)
 ## 📂 Project Highlights
 - **Mechanistic Interpretability:** SAE-based analysis of refusal mechanisms.
 - **The Conditional Hydra:** Proof that backup refusal heads trigger based on upstream danger signals, not just output failure.
