@@ -8,7 +8,7 @@ tags: [mechanistic-interpretability, ai-safety, hydra-effect]
 
 # The Unkillable Refusal
 I began by targeting Layers 14–16. This is the home of the downstream Refusal Features. I identified these using cosine similarity and expected a quick win. But the model held firm. It felt counter-intuitive. We often imagine refusal as a solid wall that grants full access once breached. But as **Prakash et al.** discovered in [*"Understanding Refusal in Language Models with Sparse Autoencoders"*](https://arxiv.org/pdf/2505.23556), refusal is a Hydra. Cut off one head, and dormant backup features immediately spike to take its place.
-
+![Hydra Diagram]({{ site.baseurl }}/assets/images/image1.png)
 # Finding the Heart
 So, I stopped fighting the heads and looked for the heart. I shifted my focus upstream to Layers 9–13. Here, I found the Harm Features identified by **Yeo et al.** in [*"Beyond I’m Sorry, I Can’t: Dissecting Large-Language-Model Refusal"*](https://arxiv.org/html/2509.09708v1). By muting just 40 of these specific features, I effectively blinded the model's "harm sensors," and the defense collapsed. Without touching the downstream refusal circuitry, the model shifted from a firm "I cannot" to a helpful tutorial. Refusal is not a wall. It is an automatic gate that only closes if the upstream sensor screams "danger."
 
