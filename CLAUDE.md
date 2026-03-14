@@ -19,10 +19,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `/workspace/hydra-effect-refusal/cache/` | `run_setup.py` | `steering_vec.pt`, `layer_results.pt`, `sparse_feature_bank.pt`, `attribution.pt` |
 | `/workspace/cache/` | experiments 04–06 | `full_attr_jailbreak.pt`, `exp05_*.pt`, `exp06_*.pt` |
 
-### First-time setup (if cache missing)
+### Session setup (new RunPod instance)
+```bash
+git pull                                          # get latest code
+HF_TOKEN=... python download_cache.py            # restore all .pt cache files from HF Hub
+```
+Cache is stored at: `madhuri723/hydra-effect-cache` (private HF dataset repo)
+- `workspace_cache/`  → `/workspace/cache/`  (Exp 04–07 outputs)
+- `project_cache/`    → `/workspace/hydra-effect-refusal/cache/`  (steering vecs, SAE bank)
+- `plots/`            → `/workspace/cache/*.png`
+- `hydra_effect_report.pdf` → `/workspace/hydra_effect_report.pdf`
+
+### First-time setup (if cache missing entirely)
 ```bash
 git clone https://github.com/andyrdt/refusal_direction dataset_source
 HF_TOKEN=... python run_setup.py   # non-interactive version of 00_setup.py
+```
+
+### Before stopping the instance
+```bash
+HF_TOKEN=... python upload_cache.py   # save all .pt files and plots to HF Hub
+git push                               # save all code changes
 ```
 
 ### Known deprecations (sae_lens v6+, new TransformerLens)
