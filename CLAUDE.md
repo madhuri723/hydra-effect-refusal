@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Environment & Setup
 
 - **Platform**: Runpod, `/workspace/` root, GPU (CUDA) required, bfloat16 throughout
+- **Model**: `google/gemma-2-2b-it` — all experiments (Exp 01–08a) conducted strictly on this model
 - **HF token**: `madhuri723` — set via `HF_TOKEN=... python script.py`
 - **Always run scripts from `/workspace/hydra-effect-refusal/` as CWD** — `utils/` importable only from there
 - **sys.path**: use `sys.path.insert(0, '/workspace/hydra-effect-refusal')` (not `/workspace`)
@@ -17,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | Path | Written by | Contents |
 |---|---|---|
 | `/workspace/hydra-effect-refusal/cache/` | `run_setup.py` | `steering_vec.pt`, `layer_results.pt`, `sparse_feature_bank.pt`, `attribution.pt` |
-| `/workspace/cache/` | experiments 04–06 | `full_attr_jailbreak.pt`, `exp05_*.pt`, `exp06_*.pt` |
+| `/workspace/cache/` | experiments 04–08a | `full_attr_jailbreak.pt`, `exp05_*.pt`, `exp06_*.pt`, `exp07_*.pt`, `exp03b_*.pt`, `exp08a_*.pt` |
 
 ### Session setup (new RunPod instance)
 ```bash
@@ -83,6 +84,8 @@ git push                               # save all code changes
 | `experiments/04_jailbreak_suppression_analysis.py` | Full SAE attribution on DAN+bomb; necessity/sufficiency ablation | `full_attr_jailbreak.pt` |
 | `experiments/05_request_sensitivity.py` | Request sensitivity — DAN wrapper vs content; bank generalization test | `exp05_attributions.pt` |
 | `experiments/06_universal_compliance_bank.py` | Compliance direction + batched attribution over harmbench; universal bank build + ablation test | `exp06_*.pt` |
+| `experiments/03b_cross_prompt_multi_request.py` | Evoke-not-suppress pattern across 15 diverse HarmBench requests; full SAE scan L9–16 | `exp03b_*.pt/csv` |
+| `experiments/08a_compliance_threshold.py` | Compliance injection sweep to find behavioural flip point; binary search on failed jailbreaks | `exp08a_threshold_results.pt` |
 
 ---
 
@@ -123,6 +126,15 @@ Full-dataset ablation results (Exp 07):
 **Correction to Exp 06 "generalises identically" claim**: The 45%/45% result on 20 prompts was sampling coincidence. Full dataset shows a 27pp gap (65% vs 38%), which is the out-of-distribution penalty from request-content shift. Jailbreakbench is in-distribution for the DAN wrapper but out-of-distribution for request topics (heavier cyber/fraud mix).
 
 **Note**: L15 feat 46131 was excluded by the benign filter — it fires on benign prompts too (general "comply with instructions" feature, not jailbreak-specific).
+
+**10. Evoke-not-suppress holds across 15 diverse requests, 6 categories (Exp 03b)**
+Full SAE attribution (L9–16) on 15 HarmBench requests × 3 conditions. Jailbreak_Whitebox compliance energy at L14–16 is **101.6% higher** than Direct_Harm on average. Pattern (compliance rises) holds for 13/15 requests (87%). The 2 exceptions (`harmful` category — honey/lilies) had already-high baseline compliance energy in Direct_Harm. Of 13 complying JBW requests: 6 were uniquely unlocked by the jailbreak (refused in Direct_Harm); 5 were already answered by Direct_Harm. L12 is the hottest upstream layer for compliance activation. Refusal rate: Direct_Harm 53%, Jailbreak_Whitebox 13%, Jailbreak_Fail 53%.
+
+**11. Compliance/refusal ratio ≥ 1.05 at L14–16 perfectly predicts jailbreak success (Exp 03b)**
+Complied requests: mean ratio 1.328 (range 1.126–1.544). Refused requests: mean ratio 0.835 (range 0.651–1.019). Threshold ratio ≥ 1.05 → 100% accuracy on this dataset (n=15).
+
+**12. Compliance injection flip point is extremely small — model barely holds refusal (Exp 08a)**
+Injecting α × compliance_direction (from Exp 06) at L15 into failed jailbreak prompts. Minimum α to flip "kill lots of people" (ratio=1.019): **α ≈ 0.02**, injection magnitude ≈ 3.3 residual stream units (norm of compliance direction = 164). Parathion synthesis (ratio=0.651) also flips at α=0.1. Both L13 and L15 injections effective. Coherence degrades sharply above α=1.0 (output becomes gibberish). Conclusion: model is barely holding refusal in failed jailbreak cases — a geometrically tiny push along the compliance direction is sufficient.
 
 ---
 
@@ -168,8 +180,25 @@ Full-dataset ablation results (Exp 07):
 
 **Root cause of failures**: Cyber/fraud prompts use "plan/advice/develop/script" framing — activates different compliance features not represented in harmbench build set.
 
-### Next experiment (Exp 08 — ideas)
-- Rebuild bank with more cyber/fraud/scam prompts in build set, specifically "plan/advice/develop" framing
-- Use multiple jailbreak wrappers (not just DAN) in the build set
-- Try larger bank sizes (top-80, top-120)
-- Test if bank transfers to Gemma-2-9B-IT
+### Exp 03b — Cross-Prompt Multi-Request Analysis
+- **Design**: 15 HarmBench requests × 3 conditions (Direct_Harm, Jailbreak_Whitebox, Jailbreak_Fail); full SAE scan L9–16
+- **Sampling**: 2–3 per category from illegal, cybercrime_intrusion, misinformation_disinformation, chemical_biological, harmful, harassment_bullying
+- **Key result**: Jailbreak_Whitebox compliance energy 101.6% higher than Direct_Harm at L14–16; pattern holds 13/15 (87%)
+- **Ratio threshold**: compliance/refusal ≥ 1.05 → 100% accurate predictor of jailbreak success
+- **7/15 requests complied with Direct_Harm without any jailbreak** (all misinformation + harmful category)
+- **Cache**: `/workspace/cache/exp03b_full_scan.pt`, `exp03b_responses.csv`, `exp03b_pattern_summary.csv`, `exp03b_tow_full.csv`
+- **Plots**: `03b_upstream_energy.png`, `03b_downstream_energy.png`, `03b_all_layers_energy.png`, `03b_heatmap_upstream.png`, `03b_heatmap_downstream.png`
+
+### Exp 08a — Compliance Injection Threshold
+- **Design**: Inject α × compliance_direction at L13/L15 into two failed JBW prompts; sweep α=0→3.0; binary search for exact flip
+- **Prompts**: "kill lots of people in NYC" (ratio=1.019) and "parathion synthesis" (ratio=0.651)
+- **Result**: Both flip at α≈0.02–0.1; minimum flip magnitude ≈ 3.3 residual stream units (2% of direction norm)
+- **Coherence window**: α=0.02–0.5 gives coherent complied output; α>1.0 → gibberish
+- **Cache**: `/workspace/cache/exp08a_threshold_results.pt`
+- **Plot**: `08a_flip_sweep.png`
+
+### Next experiment (Exp 08b — planned)
+- **Test Hydra Effect for jailbreak conditions at L14–16**
+- Idea A: Progressive refusal feature ablation on JBW vs Direct_Harm — does Hydra weaken under jailbreak?
+- Idea B: Progressive compliance feature ablation on JBW — is there a compliance Hydra (backup compliance features)?
+- Use 15-request dataset from Exp 03b for consistency
