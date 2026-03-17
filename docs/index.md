@@ -15,3 +15,4 @@ This is the documentation and development blog for my project.
 - [Project Roadmap]({{ site.baseurl }}/roadmap.md)
 - [Read the detailed launch post here]({{ site.baseurl }}/2026/02/17/v1-release.html)
 - [Deep Dive: Decapitating the Hydra - Feb 19, 2026]({{ site.baseurl }}{% post_url 2026-02-19-hydra-deep-dive %})
+- [Jailbreaks Overpower Refusal: Compliance Features - Mar 17, 2026]({{ site.baseurl }}{% post_url 2026-03-17-compliance-features %})
