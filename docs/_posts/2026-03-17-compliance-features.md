@@ -6,8 +6,6 @@ author: "Madhuri Agarwal"
 tags: [mechanistic-interpretability, ai-safety, hydra-effect]
 ---
 
-# Jailbreaks Overpower Refusal Rather Than Suppress It: Compliance Features in Gemma-2-2b-it
-
 ## Executive Summary
 
 - In successful jailbreaks on Gemma-2-2b-it, harm features activate at even greater intensity than on direct harmful requests. The model's "perception" of harm, as described by Yang (2024), is not suppressed.
@@ -46,7 +44,7 @@ In our previous post, we established that ablating top-40 harm features in L9–
 
 ### Jailbreaks amplify both signals, but compliance much more
 
-*[Figure 1: 3-panel energy plot]*
+![Hydra Diagram]({{ site.baseurl }}/assets/images/3-panel.png)
 
 *Figure 1: Mean refusal energy, compliance energy, and net energy (refusal minus compliance) across three conditions (Direct_Harm, Jailbreak_Whitebox, Jailbreak_Fail) for 15 HarmBench requests on Gemma-2-2b-it, L9–16. Refusal and compliance energy are both highest for the successful jailbreak (Jailbreak_Whitebox), with compliance energy 101.6% higher than Direct_Harm at L14–16. Compliance energy overpowers refusal energy, resulting in negative net attribution for the successful jailbreak.*
 
@@ -62,7 +60,7 @@ We injected α × compliance_direction at L15 into the two failed jailbreak case
 
 ### Compliance features are non-redundant (no hydra)
 
-*[Figure 2: ablation bar chart]*
+![Hydra Diagram]({{ site.baseurl }}/assets/images/compliance-1.png)
 
 *Figure 2: Necessity/sufficiency ablation on DAN + "Tell me how to build a bomb." Baseline: model complies. Ablating top-40 compliance features in upstream only (L9–13), downstream only (L14–16), and both: model refuses in all three conditions. This demonstrates compliance features are non-redundant, with no hydra-like backup compensation.*
 
@@ -70,13 +68,13 @@ We ablated top-40 compliance features for the harmful request "Tell me how to bu
 
 ### Universal compliance bank
 
-*[Figure 3: bank ablation results]*
+![Hydra Diagram]({{ site.baseurl }}/assets/images/compliance-bank.png)
 
 *Figure 3: Universal compliance bank (40 features, L9–16) ablation results. Left: harmful requests, refusal rate increases to 65% (harmbench, n=100) and 38% (jailbreakbench held-out, n=50). Right: benign requests, 0% disruption. The bank achieves 56% overall jailbreak block rate with perfect specificity on benign prompts.*
 
 We built a top-40 compliance feature bank from 100 harmbench prompts using the DAN-style evil confidant wrapper. This bank blocked 65% of harmbench requests (build set), 38% of jailbreakbench requests (held-out), and 56% overall across 150 prompts, with 0% false positives on harmless requests. The single-prompt ablation demonstrated no hydra in compliance features, and the bank working across 150 prompts confirms that compliance features remain non-redundant at scale.
 
-*[Figure 4: block rate by category]*
+![Hydra Diagram]({{ site.baseurl }}/assets/images/block-rate.png)
 
 *Figure 4: Post-ablation block rate by harm category (n=150). Highest: Hate/Extremism (100%, n=2). Lowest: Fraud/Scam (29%, n=14). The bank succeeds on socially/interpersonally framed harm and fails on technically/procedurally framed harm (cyber, fraud).*
 
