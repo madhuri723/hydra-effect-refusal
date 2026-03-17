@@ -2,7 +2,8 @@
 layout: post
 title: "Jailbreaks Overpower Refusal Rather Than Suppress It: Compliance Features in Gemma-2-2b-it"
 date: 2026-03-17
-tags: mechanistic-interpretability ai-safety hydra-effect jailbreaks
+author: "Madhuri Agarwal"
+tags: [mechanistic-interpretability, ai-safety, hydra-effect]
 ---
 
 # Jailbreaks Overpower Refusal Rather Than Suppress It: Compliance Features in Gemma-2-2b-it
