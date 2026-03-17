@@ -74,7 +74,7 @@ We ablated top-40 compliance features for the harmful request "Tell me how to bu
 
 We built a top-40 compliance feature bank from 100 harmbench prompts using the DAN-style evil confidant wrapper. This bank blocked 65% of harmbench requests (build set), 38% of jailbreakbench requests (held-out), and 56% overall across 150 prompts, with 0% false positives on harmless requests. The single-prompt ablation demonstrated no hydra in compliance features, and the bank working across 150 prompts confirms that compliance features remain non-redundant at scale.
 
-![Hydra Diagram]({{ site.baseurl }}/assets/images/block-rate.png)
+![Hydra Diagram]({{ site.baseurl }}/assets/images/analysis.png)
 
 *Figure 4: Post-ablation block rate by harm category (n=150). Highest: Hate/Extremism (100%, n=2). Lowest: Fraud/Scam (29%, n=14). The bank succeeds on socially/interpersonally framed harm and fails on technically/procedurally framed harm (cyber, fraud).*
 
