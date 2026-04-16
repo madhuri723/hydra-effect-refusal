@@ -43,6 +43,22 @@ HF_TOKEN=... python upload_cache.py   # save all .pt files and plots to HF Hub
 git push                               # save all code changes
 ```
 
+### Dependency installation (correct order — avoids torchvision conflict)
+`sae_lens` and `transformer_lens` will upgrade torch to an incompatible version if installed naively, breaking torchvision. Always use this order:
+```bash
+# Step 1: install transformer_lens without deps to prevent torchvision being touched
+pip install transformer_lens --no-deps
+
+# Step 2: install torch 2.6.0+cu124 + matching torchvision explicitly
+pip install torch==2.6.0+cu124 torchvision==0.21.0+cu124 torchaudio==2.6.0+cu124 \
+    --index-url https://download.pytorch.org/whl/cu124
+
+# Step 3: install everything else
+pip install sae_lens matplotlib pandas seaborn reportlab einops jaxtyping fancy_einsum huggingface_hub
+```
+- `transformer_lens 2.18.0` requires `torch>=2.6` — do NOT pin to 2.4.x
+- Never run `pip install sae_lens` or `pip install transformer_lens` without Step 1+2 first — they will pull the latest torch (2.11+cu130) which breaks torchvision
+
 ### Known deprecations (sae_lens v6+, new TransformerLens)
 - Use `sae = SAE.from_pretrained(...)` not `sae, _, _ = SAE.from_pretrained(...)`
 - Use `dtype=` not `torch_dtype=` in `load_tl_model`
