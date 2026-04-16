@@ -213,6 +213,38 @@ Injecting α × compliance_direction (from Exp 06) at L15 into failed jailbreak 
 - **Cache**: `/workspace/cache/exp08a_threshold_results.pt`
 - **Plot**: `08a_flip_sweep.png`
 
+### Exp 03b-ext — Jailbreak Style Analysis (5 new styles)
+- **Design**: 5 styles (AIM, TrustedConfidant, ProtectiveImperative, Steve, ConditionRed) × 15 HarmBench requests; full SAE attribution L9–16
+- **Baselines**: Direct_Harm and Jailbreak_Whitebox loaded from `exp03b_full_scan.pt` — not re-run
+- **Script**: `experiments/03b_ext_jailbreak_styles.py`
+- **Compliance rates**: AIM 100%, ProtectiveImperative 80%, Steve 60%, ConditionRed 53%, TrustedConfidant 40%
+- **Key finding**: Two mechanisms identified — (1) upstream compliance-dominant evoke-not-suppress (AIM, Steve, ConditionRed); (2) dampening/suppression with low absolute energy (ProtectiveImperative)
+- **TrustedConfidant caveat**: only 2 true jailbreaks (DH refused) — 4/6 successes were already-weak baseline. Not enough signal for mechanistic claims.
+- **ProtectiveImperative**: 8 true jailbreaks, all refusal-dominant downstream — genuine anomaly but low absolute energies (~4 vs ~20 for DAN) suggest dampening, not evocation
+- **L12 hottest upstream layer** for all 5 styles — consistent with Exp 03b
+- **Cache**: `exp03b_ext_attributions.pt`, `exp03b_ext_metrics.pt`, `exp03b_ext_responses.csv`, `exp03b_ext_summary.csv`
+- **Plots**: `03b_ext_downstream_compliance_by_style.png`, `03b_ext_compliance_ratio_heatmap.png`, `03b_ext_per_layer_energy.png`, `03b_ext_compliance_rate_bar.png`
+
+### Exp 03b-ext2 — New Wrapper Analysis (4 wrappers)
+- **Design**: 4 wrappers (OmniAI, SDA, PigLatin, EvilConfidant) × 15 HarmBench requests; full SAE attribution L9–16
+- **Script**: `experiments/03b_ext2_new_wrappers.py`
+- **Compliance rates**: PigLatin 100%, EvilConfidant 73%, SDA 67%, OmniAI 20%
+- **PigLatin strategy**: complex English persona framing + request encoded in Pig Latin + respond in Pig Latin; achieves 100% via obfuscation
+- **Key finding — third mechanism**: PigLatin creates a **balanced high-energy state** (upstream ratio=0.992, downstream ratio=1.023) — neither compliance nor refusal dominant, yet 100% compliance. Different from evoke-not-suppress (DAN/AIM) and dampening (PI). Obfuscation appears to prevent refusal circuit from decisively winning.
+- **EvilConfidant and SDA**: compliance-dominant on true jailbreaks — consistent with evoke-not-suppress pattern
+- **Ratio ≥ 1.05 threshold**: 93% accurate for EvilConfidant (best yet), only 40% for PigLatin (threshold doesn't apply to obfuscation mechanism)
+- **L12 hottest upstream layer** for all wrappers — now consistent across all 9 new styles/wrappers tested
+- **Cache**: `exp03b_ext2_attributions.pt`, `exp03b_ext2_metrics.pt`, `exp03b_ext2_responses.csv`
+- **Plots**: `03b_ext2_downstream_compliance_by_wrapper.png`, `03b_ext2_compliance_ratio_heatmap.png`, `03b_ext2_per_layer_energy.png`, `03b_ext2_compliance_rate_bar.png`
+- **Consolidated energy table**: `all_conditions_energy_table.csv` — all 11 conditions × 15 requests, upstream/downstream compliance+refusal energy and ratios
+
+### Three Jailbreak Mechanisms (summary across 03b, 03b-ext, 03b-ext2)
+| Mechanism | Examples | Upstream ratio | Downstream ratio | Absolute energy |
+|---|---|---|---|---|
+| Evoke-not-suppress | DAN, AIM, Steve, EvilConfidant | >1.2 | >1.1 | High (20–35) |
+| Balanced obfuscation | PigLatin | ~1.0 | ~1.0 | High (21–22) |
+| Dampening | ProtectiveImperative | <0.8 | <0.8 | Low (4–8) |
+
 ### Next experiment (Exp 08b — planned)
 - **Test Hydra Effect for jailbreak conditions at L14–16**
 - Idea A: Progressive refusal feature ablation on JBW vs Direct_Harm — does Hydra weaken under jailbreak?
