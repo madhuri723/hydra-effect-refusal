@@ -3,16 +3,13 @@ layout: default
 title: My Project Blog
 ---
 
-# Welcome to Hydra Effect in Refusal
+# Hydra Effect in Refusal
 
-This is the documentation and development blog for my project. 
+Documenting my mechanistic interpretability research on refusal mechanisms in Gemma-2-2b-it.
 
-### Recent Updates
-- [Project Launch - Feb 17, 2026]({{ site.baseurl }}{% post_url 2026-02-17-v1-release %}) 
+### Posts
+- [Jailbreaks Overpower Refusal Rather Than Suppress It: Compliance Features in Gemma-2-2b-it]({{ site.baseurl }}{% post_url 2026-03-17-compliance-features %}) — Mar 17, 2026
+- [Decapitating the Hydra: How Upstream Sensors Control Refusal]({{ site.baseurl }}{% post_url 2026-02-19-hydra-deep-dive %}) — Feb 19, 2026
 
 ### Links
-- [View the Code](https://github.com)
-- [Project Roadmap]({{ site.baseurl }}/roadmap.md)
-- [Read the detailed launch post here]({{ site.baseurl }}/2026/02/17/v1-release.html)
-- [Deep Dive: Decapitating the Hydra - Feb 19, 2026]({{ site.baseurl }}{% post_url 2026-02-19-hydra-deep-dive %})
-- [Jailbreaks Overpower Refusal: Compliance Features - Mar 17, 2026]({{ site.baseurl }}{% post_url 2026-03-17-compliance-features %})
+- [View the Code](https://github.com/madhuri723/hydra-effect-refusal)
